@@ -1,0 +1,9 @@
+#!/bin/sh
+#Shell Scripting Tutorial- 7. Loops
+
+echo "Cuenta regresiva"
+for i in 5 4 3 2 1
+do 
+    echo "$i"
+done
+echo ¡Despegue!

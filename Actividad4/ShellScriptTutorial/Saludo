@@ -1,0 +1,5 @@
+#!/bin/sh
+
+#Shell Scripting Tutorial- 3. A first Script
+
+echo Salut tout le monde

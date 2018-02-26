@@ -1,0 +1,18 @@
+#!/bin/sh
+
+#Shell Scripting Tutorial- 9. Case
+
+echo "Dime con qué programas y te diré quien eres"
+
+	read entrada
+    case $entrada in
+    Fortran)
+    	echo "Eres físico"
+        ;;
+	Maple)
+    	echo "Eres matemático
+        ;;
+    *)
+    	echo "Ni idea quien eres"
+        ;;
+    esac #Se debe poner esac para terminar un case	

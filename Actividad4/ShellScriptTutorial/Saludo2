@@ -1,0 +1,8 @@
+#!/bin/sh
+#Shell Scripting Tutorial- 4. Variables (Part I)
+
+echo Tu t'appelle comment?
+read nom
+echo "Salut $nom - J'espère que tu vas bien."
+
+

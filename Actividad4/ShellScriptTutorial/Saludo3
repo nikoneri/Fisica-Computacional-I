@@ -1,0 +1,6 @@
+#!/bin/sh
+#Shell Scripting Tutorial- 4. Variables (Part I)
+
+echo "Saludo: $Saludo"
+Saludo="Bonjour"
+echo "Saludo: $Saludo"

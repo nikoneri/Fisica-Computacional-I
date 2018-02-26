@@ -1,0 +1,9 @@
+#!/bin/sh
+
+#Shell Scripting Tutorial- 8. Variables(Part II)
+
+echo "Se han utilizado $# parametros"
+echo "El nombre de este archivo es: $0"
+echo "El primer parámetro  es $1"
+echo "El segundo parámetro es $2"
+echo "Todos los parámetros son $@"

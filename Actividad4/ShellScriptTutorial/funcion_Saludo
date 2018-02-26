@@ -1,0 +1,8 @@
+#!/bin/sh
+
+#Shell Scripting Tutorial- 13. Functions
+
+Saludo() {
+echo "Hola mundo"
+}
+Saludo

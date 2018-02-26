@@ -1,0 +1,10 @@
+#!/bin/sh
+
+#Shell Scripting Tutorial- 8. Test
+
+old_IFS="$IFS"
+IFS=,
+echo "Introduzca 3 datos separados por coma"
+read a b c
+IFS=$old_IFS
+echo "a es $a, b es $b, c es $z"

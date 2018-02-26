@@ -1,0 +1,10 @@
+#!/bin/sh
+
+#Shell Scripting Tutorial- 13. Function
+
+Saludo () {
+    local var="Hola mundo"
+    echo $var
+}
+
+

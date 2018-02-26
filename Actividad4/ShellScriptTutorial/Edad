@@ -1,0 +1,6 @@
+#!/bin/sh
+#Shell Scripting Tutorial- 6. Escape Characters
+
+X=20
+echo "Tengo $X años de edad"
+

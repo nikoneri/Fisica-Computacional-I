@@ -1,0 +1,7 @@
+#!/bin/sh
+
+#Shell Scripting Tutorial- 8. Test
+
+x=10
+y=15
+test $x -eq  $y && echo "$x si es igual a $y " || echo "$x no es igual a $y"

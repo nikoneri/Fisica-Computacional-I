@@ -1,0 +1,8 @@
+#!/bin/sh
+
+#Shell Scripting Tutorial- 11. Variables(Part 3)
+
+echo -en "Cómo te llamas [ `whoami` ] "
+read myname
+echo "Mi nombre es : ${myname:-`whoami`}"
+

@@ -1,0 +1,7 @@
+#!/bin/sh
+
+#Shell Scripting Tutorial- 8. Test
+
+x="Caldo de pollo"
+y="Caldo de res"
+[ "$x" = "$y" ]; echo $? 
