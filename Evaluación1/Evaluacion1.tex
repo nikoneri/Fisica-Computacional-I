@@ -1,0 +1,261 @@
+\documentclass[a4paper]{article}
+
+%% Language and font encodings
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc}
+
+%% Sets page size and margins
+\usepackage[a4paper,top=3cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+%% Useful packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage{subcaption}
+
+\title{Evaluación 1}
+\author{Isaac Neri Gómez Sarmiento}
+
+\begin{document}
+\maketitle
+
+\section{Introducción}
+En esta evaluación se hizo un análisis de 2 archivos que contenían datos sobre el Nivel del agua, Salinidad y Temperatura del Manglar de "El Sargento", el cual se encuentra al norte de la isla tiburón. El rango de datos seleccionados para ambos archivos van  del 10/26/2017 hasta el 11/20/2017, con la diferencia que con el archivo sargento-20117 empieza a la 13:00 y termina a las 11:30, mientras que con el archivo Sargento-Salinidad empieza de 12:45 a las 11:15.
+
+
+\section{Análisis de Datos  y Resultados}
+
+\subsection{Limpieza de datos}
+En esta evaluación se descargaron 2 archivos:
+\begin{verbatim}
+sargento_201117.csv
+sargento-salinidad-201117.csv
+\end{verbatim}
+
+Estos contenían datos extra que no requeriamos, no obstante no presentaban tanta complicación como para extraer los datos solicitados con pandas, de ahí que no se ocupo Emacs. 
+
+Las librerías utilizadas fueron:
+
+\begin{verbatim}
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from datetime import datetime
+\end{verbatim}
+
+Se procedieron a leer los archivos  sargento-201117 y sargento-Salinidad saltando lineas, para después crear un data frame
+
+\begin{verbatim}
+df1=pd.read_csv("sargento-salinidad-201117.csv", skiprows=3, sep=",")
+df2=pd.DataFrame(df1)
+
+df3=pd.read_csv("sargento_201117.csv", skiprows=2, sep=",")
+
+\end{verbatim}
+
+Se procedió a nombrar las columnas de cada archivo, después se procedió a dar un formato a la fecha y luego añadir una columna de meses para ambos archivos:
+
+\begin{verbatim}
+df2.columns=["#", "Fecha", "ConditionHighRng", "Temp_C", "Specific_Conductance", "Salinity"]
+df2['Ndate'] = pd.to_datetime(df2['Fecha'], format='%m/%d/%Y %H:%M:%S')
+df2['month'] = df2['Ndate'].dt.month
+df2.head()
+
+df3.columns=["#", "Fecha", "Abs_Pres", "Temp_C", "Nivel_mar"]
+df3['Ndate'] = pd.to_datetime(df3['Fecha'], format='%m/%d/%Y %H:%M:%S')
+df3['month'] = df3['Ndate'].dt.month
+df3.head()
+
+\end{verbatim}
+
+La parte final de la preparación de los archivos consistió en poner en un solo dataframe las columnas de Fecha, Mes, Salinidad, Temperatura y Nivel del mar.                                                                                                          
+
+\begin{verbatim}
+df6=pd.concat([df2["Ndate"],df2["month"], df2["Salinity"],df2["Temp_C"], df3["Nivel_mar"], ],join="inner", axis=1)
+\end{verbatim}
+
+
+\subsection{Graficación y resultados}
+
+\subsubsection{Boxplot}
+
+Un segmento de código que permite realizar este tipo de gráficas es el siguiente:
+
+\begin{verbatim}
+import seaborn as sns
+ax = sns.boxplot(x="month", y="Salinity", data=df6)
+plt.xlabel("Mes")
+plt.ylabel("Salinidad(ppt)")
+plt.show()
+\end{verbatim}
+
+\begin{figure}[h!]
+\centering 
+\includegraphics[width=60mm]{Boxplot_NivelMar.JPG}\label{fig:00Z}
+\includegraphics[width=60mm]{Boxplot_Salinidad.JPG} 
+\includegraphics[width=60mm]{Boxplot_Temp.JPG}
+\caption{Boxplot de Nivel del Mar, Salinidad y Temperatura}
+\end{figure}
+
+En las gráficas de arriba podemos apreciar que se grafican diagramas de caja relacionadas con el nivel del mar, salinidad y temperatura. 
+
+En ambos meses se presentan valores atípicos representados por los puntitos grises de cada gráfica.
+
+La razón por la cual la caja verde esté mas alta es debido a que se dispone de más datos de Noviembre que de Octubre.
+
+
+
+
+
+
+
+\subsubsection{Pearson}
+
+Un segmento de código que permite realizar este tipo de gráficas es el siguiente:
+
+\begin{verbatim}
+import seaborn as sns
+sns.set(style="darkgrid", color_codes=True)
+
+g = sns.jointplot("Nivel_mar", "Salinity", data=df6, kind="reg",
+                   color="r", size=7)
+plt.xlabel("Nivel del mar (m)")
+plt.ylabel("Salinidad (ppt)")
+plt.show(g)
+\end{verbatim}
+
+Podemos identificar rápidamente a partir de la gráfica de los datos de temperatura-salinidad que estos tienen una relación lineal. En el coeficiente de Pearson de la gráfica mencionada se obtuvo un valor de pearson=-1, lo cual indica una gran tendencia de los datos de ser lineales. Las gráficas restantes tienen un coeficiente de -.13 y .13, ambos simétricos.
+
+\begin{figure}[h!]
+\centering 
+\includegraphics[width=60mm]{Pearson_TempNivel.JPG}
+\label{fig:00Z}
+\includegraphics[width=60mm]{Pearson_SalTemp.JPG}
+\label{fig:12Z}  
+\includegraphics[width=50mm]{Pearson_SalNivel.JPG}
+\caption{Gráficas de Pearson}
+\end{figure}
+
+
+
+\subsubsection{Gráficas independientes}
+
+Un segmento de código que permite realizar este tipo de gráficas es el siguiente:
+
+\begin{verbatim}
+plt.plot_date(x=df6.Ndate, y=df6.Salinity, fmt="b-")
+plt.xticks(rotation=90)
+plt.ylabel("Salinidad(ppt)")
+plt.xlabel("Tiempo (dias)")
+plt.grid(True)
+plt.show()
+\end{verbatim}
+
+\begin{figure}[h!]
+\centering 
+\includegraphics[width=49mm]{Temp_Tiempo.JPG}
+\label{fig:00Z}
+\includegraphics[width=49mm]{Salinidad_Tiempo.JPG}
+\label{fig:12Z}  
+\includegraphics[width=49mm]{NivelMar_Tiempo.JPG}
+\caption{Gráficas de Temperatura, Salinidad, Pearson}
+\end{figure}
+
+
+
+En la gráfica de la izquierda, podemos ver que conforme pasa el tiempo, la temperatura va disminuyendo.Parece ser lo contrario de esto la gráfica de en medio. Además, en la gráfica de la derecha, su contorno parece ir oscilando como una onda.
+
+
+
+
+\newpage
+
+\subsubsection{Gráficas Superpuestas}
+
+Un segmento de código que permite realizar este tipo de gráficas es el siguiente:
+\begin{verbatim}
+fig, ax1= plt.subplots()
+t=df6["Ndate"]
+s1=df6["Nivel_mar"]
+ax1.plot(t, s1, "b-")
+ax1.set_xlabel("Tiempo (dias)")
+plt.xticks(rotation=90)
+
+ax1.set_ylabel("Nivel del mar (m)", color="b")
+ax1.tick_params("y", colors="b")
+ax2=ax1.twinx()
+s2= df6["Salinity"]
+ax2.plot(t, s2, "r")
+ax2.set_ylabel("Salinidad (ppt)", color="r")
+ax2.tick_params("y", colors="r")
+
+fig.tight_layout()
+plt.show()
+\end{verbatim}
+
+
+\begin{figure}[h!]
+\centering 
+\includegraphics[width=60mm]{NivelMar_Temp_Tiempo.JPG}
+\label{fig:00Z}
+\includegraphics[width=60mm]{NivelMar_Salinidad_Tiempo.JPG}
+\label{fig:12Z}  
+\caption{Gráficas superpuestas}
+\end{figure}
+
+La gráfica de la izquierda es demasiado variable en comparación con la de la derecha. En la de la izquierda hay intervalos en donde a niveles de mar altos, en la gráfica se presentan altas temperaturas.
+
+La gráfica de la derecha nos indica que hay ciertos invervalos donde la salinidad es muy baja y el nivel del mar es muy alto y también a la inversa. 
+
+
+\subsubsection{Gráficas superpuestas (Rango de 5 días)}
+
+
+Un segmento de código que permite realizar este tipo de gráficas es el siguiente:
+
+\begin{verbatim}
+fig, ax1= plt.subplots()
+t=df6["Ndate"]
+s1=df6["Nivel_mar"]
+ax1.plot(t, s1, "b-")
+ax1.set_xlabel("Tiempo(dias)")
+
+plt.xlim(['2017-11-05 21:00:00', '2017-11-10 21:00:00'])
+
+ax1.set_ylabel("Nivel del mar (m)", color="b")
+ax1.tick_params("y", colors="b")
+ax2=ax1.twinx()
+s2= df6["Salinity"]
+ax2.plot(t, s2, "r")
+ax2.set_ylabel("Salinidad(ppt)", color="r")
+ax2.tick_params("y", colors="r")
+fig.tight_layout()
+plt.show()
+\end{verbatim}
+
+\begin{figure}[h!]
+\centering 
+\includegraphics[width=60mm]{NivelMar_Temp_Tiempo_5dias.JPG}
+\label{fig:00Z}
+\includegraphics[width=60mm]{NivelMar_Salinidad_Tiempo_5dias.JPG}
+\label{fig:12Z}  
+\caption{Gráficas superpuestas (5 días)}
+\end{figure}
+
+Se puede notar en ambas gráficas que la temperatura tiene menos altibajos que el nivel del mar registrado. En la gráfica de la izquierda los picos de altura están la mayoría por debajo de la curva de temperatura en comparación a la gráfica de la derecha.
+
+\section{Conclusión}
+A manera de conclusión enlistaré 2 cosas que pude llegar a determinar.
+
+•Existe una relación lineal entre la temperatura y la salinidad.
+
+•En las gráficas superpuestas en un intervalo de 5 días, la temperatura parecía no cambiar mucho a comparación de los altibajos del nivel del mar que el sensor detectó.
+
+
+
+
+
+
+\end{document}
